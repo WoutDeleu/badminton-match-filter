@@ -1,0 +1,35 @@
+# Club Players List
+# Add one player name per line (exactly as they appear in the Excel file)
+# Lines starting with # are comments and will be ignored
+#
+# Example:
+# Jan Peeters
+# Marie Janssens
+# Tom De Vries
+#
+# Add your club players below:
+
+Aurélie Baekelandt
+Lotte Baekelandt
+Ina Buckens Tong
+Ivan Buckens Tong
+Lotte Cabus
+Seppe Cabus
+Wout Cabus
+Seppe Daemers
+Victor Dekeyser
+Noa Deprez
+Mira Devos
+Louise Dewaele
+Elise Laporte
+Lora Laporte
+Norbert Jude Le Fevre
+Sicheng Li
+Kasper Nelen
+Mats Temmerman
+Rhune Verhelst
+Yinte Verhelst
+Elias Westen
+Jakob Westen
+Julia Westen
+
