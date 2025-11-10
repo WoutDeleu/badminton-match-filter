@@ -73,7 +73,17 @@ def extract_player_names(team_cell):
         players = [team_str]
 
     # Clean up and normalize player names
-    return [p.strip().lower() for p in players if p.strip()]
+    # Remove seeding numbers like [1], [2], etc.
+    cleaned_players = []
+    for p in players:
+        if p.strip():
+            # Remove anything in brackets (seeding numbers)
+            name = p.strip()
+            if '[' in name:
+                name = name.split('[')[0].strip()
+            cleaned_players.append(name.lower())
+
+    return cleaned_players
 
 
 def is_club_match(team1, team2, club_players):
@@ -182,10 +192,24 @@ def filter_matches(input_file, output_file, players_file, team1_col=None, team2_
         sys.exit(1)
 
     # Filter rows based on club players
-    mask = df.apply(
-        lambda row: is_club_match(row[team1_col], row[team2_col], club_players),
-        axis=1
-    )
+    # For doubles matches that span two rows, we need to keep both rows
+    mask = pd.Series([False] * len(df), index=df.index)
+
+    for idx, row in df.iterrows():
+        if is_club_match(row[team1_col], row[team2_col], club_players):
+            mask[idx] = True
+
+            # Check if this is a doubles match (row below might be the partner row)
+            # Doubles matches have time in one row, and NaN in the next
+            time_col = df.columns[1]  # Tijdstip column
+
+            # If current row has a time and next row exists and has NaN time, keep next row too
+            if idx + 1 < len(df) and pd.notna(row[time_col]) and pd.isna(df.loc[idx + 1, time_col]):
+                mask[idx + 1] = True
+
+            # If current row has NaN time and previous row exists and has a time, keep previous row too
+            if idx > 0 and pd.isna(row[time_col]) and pd.notna(df.loc[idx - 1, time_col]):
+                mask[idx - 1] = True
 
     filtered_df = df[mask]
 
